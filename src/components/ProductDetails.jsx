@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-function ProductDetails({ product, onClose }) {
+function ProductDetails({ product, onClose, onEdit }) {
   useEffect(() => {
     const onKeyDown = (event) => {
       if (event.key === "Escape") onClose();
@@ -38,9 +38,18 @@ function ProductDetails({ product, onClose }) {
             {product.price.toLocaleString("th-TH")} ฿
           </p>
           <p className="details__meta">รหัสสินค้า #{product.id}</p>
-          <button className="button" type="button" onClick={onClose}>
-            ปิดหน้าต่าง
-          </button>
+          <div className="details__actions">
+            <button
+              className="button button--ghost"
+              type="button"
+              onClick={onClose}
+            >
+              ปิดหน้าต่าง
+            </button>
+            <button className="button" type="button" onClick={onEdit}>
+              แก้ไข
+            </button>
+          </div>
         </div>
       </div>
     </div>

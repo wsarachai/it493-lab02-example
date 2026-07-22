@@ -1,17 +1,23 @@
 import { useMemo, useState } from "react";
 import ProductList from "./components/ProductList";
 import ProductDetails from "./components/ProductDetails";
+import ProductForm from "./components/ProductForm";
 import FilterBar from "./components/FilterBar";
-import { products } from "./data/products";
+import { products as initialProducts } from "./data/products";
 
 const ALL = "ทั้งหมด";
 
-const categories = [ALL, ...new Set(products.map((p) => p.category))];
-
 function App() {
+  const [products, setProducts] = useState(initialProducts);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(ALL);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
+
+  const categories = useMemo(
+    () => [ALL, ...new Set(products.map((p) => p.category))],
+    [products],
+  );
 
   const visibleProducts = useMemo(() => {
     const keyword = query.trim().toLowerCase();
@@ -20,11 +26,19 @@ function App() {
         (category === ALL || product.category === category) &&
         product.name.toLowerCase().includes(keyword),
     );
-  }, [query, category]);
+  }, [products, query, category]);
 
   const resetFilters = () => {
     setQuery("");
     setCategory(ALL);
+  };
+
+  const handleSave = (updated) => {
+    setProducts((prev) =>
+      prev.map((product) => (product.id === updated.id ? updated : product)),
+    );
+    setSelectedProduct(updated);
+    setEditingProduct(null);
   };
 
   return (
@@ -49,10 +63,18 @@ function App() {
           onReset={resetFilters}
         />
       </main>
-      {selectedProduct && (
+      {selectedProduct && !editingProduct && (
         <ProductDetails
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
+          onEdit={() => setEditingProduct(selectedProduct)}
+        />
+      )}
+      {editingProduct && (
+        <ProductForm
+          product={editingProduct}
+          onSave={handleSave}
+          onClose={() => setEditingProduct(null)}
         />
       )}
     </div>
