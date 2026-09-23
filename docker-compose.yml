@@ -1,0 +1,12 @@
+services:
+  web:
+    build: ./frontend
+    ports: [ "8080:80" ]
+    depends_on: [ api ]
+  api:
+    image: node:20-alpine
+    working_dir: /data
+    volumes: [ ./api:/data ]
+    command: >
+      npx json-server db.json
+      --host 0.0.0.0 --port 3001
