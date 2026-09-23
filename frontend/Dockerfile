@@ -1,18 +1,18 @@
-# stage 1: build
-FROM node:20-alpine AS build
+# ---------- stage "dev": Vite dev server (ใช้ตอนพัฒนา) ----------
+FROM node:24-alpine AS dev
 WORKDIR /app
-
-COPY package*.json ./
+COPY package.json package-lock.json ./
 RUN npm ci
-
 COPY . .
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host"]
+
+# ---------- stage "build": สร้างไฟล์ static ลง /app/dist ----------
+FROM dev AS build
 RUN npm run build
 
-# stage 2: serve
-FROM nginx:alpine
-
-COPY --from=build /app/dist /usr/share/nginx/html
+# ---------- stage "prod": Nginx เสิร์ฟไฟล์ที่ build แล้ว ----------
+FROM nginx:1.31-alpine AS prod
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
+COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
-

@@ -1,0 +1,24 @@
+.shop {
+  max-width: 480px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+  text-align: left;
+}
+.shop h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+.products {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.products li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #ddd;
+}
+.error {
+  color: #c0392b;
+}

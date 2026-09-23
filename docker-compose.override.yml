@@ -1,9 +1,13 @@
+# dev override: docker compose up (ไม่ใส่ -f) จะรวมไฟล์นี้อัตโนมัติ
 services:
   web:
-    image: node:20-alpine
-    working_dir: /app
-    command: npm run dev -- --host
-    ports: [ "5173:5173" ]
+    build:
+      target: dev
+    ports: !override
+      - "5173:5173"
+    environment:
+      API_URL: http://api:3001
+      WATCH_POLLING: "true"
     volumes:
       - ./frontend:/app
       - /app/node_modules
